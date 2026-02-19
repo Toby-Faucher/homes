@@ -67,8 +67,8 @@ export default function Home() {
           </div>
         ))}
       </div>
-      {currentIndex > 0 && <ScrollUpButton onClick={scrollToPrev} />}
-      {!isAtEnd && <ScrollDownButton onClick={scrollToNext} />}
+      <ScrollUpButton onClick={scrollToPrev} visible={currentIndex > 0} />
+      <ScrollDownButton onClick={scrollToNext} visible={!isAtEnd} />
     </main>
   );
 }
