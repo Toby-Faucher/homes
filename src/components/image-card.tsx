@@ -97,14 +97,14 @@ export function ImageCard({
   return (
     <div
       ref={cardRef}
-      className={`flex items-center gap-10 py-20 px-8 transition-all duration-700 ease-out ${
+      className={`flex h-svh items-center gap-10 px-8 transition-all duration-700 ease-out ${
         imageOnLeft ? "flex-row" : "flex-row-reverse"
       } ${cardVisible ? entrance.visible : entrance.hidden}`}
     >
       {/* Image */}
       <div
         className="relative shrink-0 cursor-pointer overflow-hidden rounded-2xl"
-        style={{ width: "55vw", height: "62vh" }}
+        style={{ width: "55vw", height: "72vh" }}
         onClick={onClick}
       >
         <div

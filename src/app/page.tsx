@@ -77,56 +77,76 @@ const images: ImageEntry[] = [
 ];
 
 // Snake connector between image cards.
-// Draws itself as the user scrolls — 0% when it enters the viewport, 100% when its top reaches the viewport top.
+// Uses actual pixel coordinates so getTotalLength() and strokeDasharray are in the same unit.
+// Draws itself as the user scrolls — 0% when it enters the viewport bottom, 100% when its top hits the viewport top.
 function SnakeConnector({ fromLeft }: { fromLeft: boolean }) {
+  const svgRef = useRef<SVGSVGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const dotRef = useRef<SVGCircleElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const startX = fromLeft ? 28 : 72;
-  const endX = fromLeft ? 72 : 28;
-  const d = `M ${startX} 0 C ${startX} 50, ${endX} 50, ${endX} 100`;
-
   useEffect(() => {
+    const svg = svgRef.current;
     const path = pathRef.current;
+    const dot = dotRef.current;
     const container = containerRef.current;
-    if (!path || !container) return;
+    if (!svg || !path || !dot || !container) return;
 
-    const totalLength = path.getTotalLength();
-    if (totalLength === 0) return;
+    const H = 200;
+    let totalLength = 0;
 
-    path.style.strokeDasharray = `${totalLength}`;
-    path.style.strokeDashoffset = `${totalLength}`;
-
-    const onScroll = () => {
-      const rect = container.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // 0 when the connector enters from the bottom, 1 when its top hits the viewport top
-      const progress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
-      path.style.strokeDashoffset = `${totalLength * (1 - progress)}`;
+    const setup = () => {
+      const W = container.offsetWidth;
+      if (W === 0) return;
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const sx = (fromLeft ? 0.28 : 0.72) * W;
+      const ex = (fromLeft ? 0.72 : 0.28) * W;
+      path.setAttribute("d", `M ${sx} 0 C ${sx} ${H / 2}, ${ex} ${H / 2}, ${ex} ${H}`);
+      // Midpoint of this bezier always lands at the SVG centre
+      dot.setAttribute("cx", `${W / 2}`);
+      dot.setAttribute("cy", `${H / 2}`);
+      totalLength = path.getTotalLength();
+      path.style.strokeDasharray = `${totalLength}`;
+      updateOffset();
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    const updateOffset = () => {
+      if (totalLength === 0) return;
+      const rect = container.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
+      path.style.strokeDashoffset = `${totalLength * (1 - progress)}`;
+      // Dot fades in as the line passes through the midpoint (progress ~0.5)
+      dot.style.opacity = `${Math.max(0, Math.min(1, (progress - 0.4) / 0.2))}`;
+    };
+
+    setup();
+    window.addEventListener("scroll", updateOffset, { passive: true });
+    const ro = new ResizeObserver(setup);
+    ro.observe(container);
+
+    return () => {
+      window.removeEventListener("scroll", updateOffset);
+      ro.disconnect();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fromLeft]);
 
   return (
     <div ref={containerRef} className="pointer-events-none hidden md:block">
-      <svg
-        width="100%"
-        height="200"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
+      <svg ref={svgRef} width="100%" height="200">
         <path
           ref={pathRef}
-          d={d}
           stroke="rgba(255,255,255,0.45)"
           strokeWidth="5"
           fill="none"
           strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
+        />
+        <circle
+          ref={dotRef}
+          r="3"
+          fill="rgba(255,255,255,0.6)"
+          style={{ opacity: 0 }}
         />
       </svg>
     </div>
