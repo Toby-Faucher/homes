@@ -44,10 +44,10 @@ src/
 - [x] **Caption positioning variety**: Captions cycle through 4 positions (full bottom, bottom-left, bottom-right, top-left)
 - [x] **Image number / progress**: Subtle "3 / 12" counter in top-right corner of each card
 
-### Phase 3 — Layout Variety
-- [ ] **Mixed layouts**: Not every card needs to be the same — some images could bleed full-width, some could be smaller with more text
-- [ ] **Parallax or subtle scroll effects**: Slight vertical parallax on images as you scroll past
-- [ ] **Transition between cards**: Crossfade or staggered entrance instead of uniform fade
+### Phase 3 — Layout Variety ✓
+- [x] **Mixed layouts**: Cards cycle through 3 widths (standard 90vw, narrow 70vw, wide 95vw)
+- [x] **Parallax scroll effect**: Images shift vertically based on scroll position (6% factor, scale-110 to prevent gaps)
+- [x] **Staggered entrances**: Cards cycle through 4 entrance animations (slide-up, slide-left, slide-right, scale-up)
 
 ### Phase 4 — Real Content
 - [ ] Replace picsum placeholders with actual photos of homes
