@@ -11,17 +11,23 @@ const captionPositions = [
 ] as const;
 
 const layoutVariants = [
-  "w-[90vw] max-w-6xl",    // standard
-  "w-[70vw] max-w-4xl",    // narrow
-  "w-[95vw] max-w-7xl",    // wide
+  "w-[90vw] max-w-6xl",
+  "w-[70vw] max-w-4xl",
+  "w-[95vw] max-w-7xl",
 ] as const;
 
 const entranceVariants = [
-  { hidden: "opacity-0 translate-y-8",  visible: "opacity-100 translate-y-0" },
+  { hidden: "opacity-0 translate-y-8",   visible: "opacity-100 translate-y-0" },
   { hidden: "opacity-0 -translate-x-12", visible: "opacity-100 translate-x-0" },
   { hidden: "opacity-0 translate-x-12",  visible: "opacity-100 translate-x-0" },
   { hidden: "opacity-0 scale-95",        visible: "opacity-100 scale-100" },
 ] as const;
+
+// How far (in %) the parallax wrapper extends beyond the card on each side.
+// The parallax translateY must stay within this budget.
+const PARALLAX_INSET = 10;
+const PARALLAX_FACTOR = 0.06;
+const PARALLAX_MAX_PX = 40;
 
 export function ImageCard({
   src,
@@ -51,22 +57,15 @@ export function ImageCard({
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setCardVisible(true);
-          observer.disconnect();
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) { setCardVisible(true); observer.disconnect(); } },
       { threshold: 0.2 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  // Parallax: shift image slightly based on scroll position
+  // Parallax: shift the oversized image wrapper vertically within its clipping parent
   useEffect(() => {
     const card = cardRef.current;
     const image = imageRef.current;
@@ -74,9 +73,10 @@ export function ImageCard({
 
     const onScroll = () => {
       const rect = card.getBoundingClientRect();
-      const viewportCenter = window.innerHeight / 2;
       const cardCenter = rect.top + rect.height / 2;
-      const offset = (cardCenter - viewportCenter) * 0.06;
+      const viewportCenter = window.innerHeight / 2;
+      const raw = (cardCenter - viewportCenter) * PARALLAX_FACTOR;
+      const offset = Math.max(-PARALLAX_MAX_PX, Math.min(PARALLAX_MAX_PX, raw));
       image.style.transform = `translateY(${offset}px)`;
     };
 
@@ -89,31 +89,22 @@ export function ImageCard({
   useEffect(() => {
     const el = captionRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setCaptionVisible(true);
-          observer.disconnect();
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) { setCaptionVisible(true); observer.disconnect(); } },
       { threshold: 0.5 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
     if (!captionVisible) return;
-
     let i = 0;
     const interval = setInterval(() => {
       i++;
       setDisplayedText(caption.slice(0, i));
       if (i >= caption.length) clearInterval(interval);
     }, 30);
-
     return () => clearInterval(interval);
   }, [captionVisible, caption]);
 
@@ -128,30 +119,42 @@ export function ImageCard({
         className={`relative cursor-pointer overflow-hidden rounded-lg border-2 border-black ${layout}`}
         onClick={onClick}
       >
-      <div ref={imageRef} className="transition-transform duration-0">
-        <Image
-          src={src}
-          alt=""
-          width={1200}
-          height={800}
-          className="w-full scale-110 object-cover"
-        />
-      </div>
-      {/* Progress counter */}
-      <div className="absolute top-3 right-3 rounded-full bg-black/40 px-2.5 py-1 font-[family-name:var(--font-geist-mono)] text-xs text-white/50 backdrop-blur-sm">
-        {index + 1} / {total}
-      </div>
-      <div
-        ref={captionRef}
-        className={`absolute bg-black/60 px-6 py-4 backdrop-blur-sm ${position}`}
-      >
-        <p className="font-[family-name:var(--font-lora)] text-sm italic leading-relaxed text-white">
-          {displayedText}
-          {captionVisible && displayedText.length < caption.length && (
-            <span className="not-italic animate-pulse">|</span>
-          )}
-        </p>
-      </div>
+        {/* Fixed 3:2 aspect ratio so all images are consistently proportioned */}
+        <div className="aspect-[3/2]" />
+
+        {/* Parallax wrapper extends beyond the card by PARALLAX_INSET % on all sides,
+            giving the translateY room to move without ever revealing a gap */}
+        <div
+          ref={imageRef}
+          className="absolute"
+          style={{ inset: `-${PARALLAX_INSET}%` }}
+        >
+          <Image
+            src={src}
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="95vw"
+          />
+        </div>
+
+        {/* Progress counter */}
+        <div className="absolute right-3 top-3 z-10 rounded-full bg-black/40 px-2.5 py-1 font-[family-name:var(--font-geist-mono)] text-xs text-white/50 backdrop-blur-sm">
+          {index + 1} / {total}
+        </div>
+
+        {/* Caption */}
+        <div
+          ref={captionRef}
+          className={`absolute z-10 bg-black/60 px-6 py-4 backdrop-blur-sm ${position}`}
+        >
+          <p className="font-[family-name:var(--font-lora)] text-sm italic leading-relaxed text-white">
+            {displayedText}
+            {captionVisible && displayedText.length < caption.length && (
+              <span className="not-italic animate-pulse">|</span>
+            )}
+          </p>
+        </div>
       </div>
     </div>
   );
