@@ -88,7 +88,7 @@ export function ImageModal({
             className="w-full object-cover"
           />
           <div className="bg-black/60 px-6 py-4 backdrop-blur-sm">
-            <p className="font-mono text-sm text-white">
+            <p className="font-[family-name:var(--font-lora)] text-sm italic leading-relaxed text-white">
               {displayedText}
               {displayedText.length < caption.length && (
                 <span className="animate-pulse">|</span>

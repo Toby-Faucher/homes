@@ -3,12 +3,33 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-export function ImageCard({ src, caption, onClick }: { src: string; caption: string; onClick?: () => void }) {
+const captionPositions = [
+  "bottom-0 left-0 right-0",           // full bottom bar
+  "bottom-4 left-4 right-auto max-w-sm rounded-lg",  // bottom-left floating
+  "bottom-4 right-4 left-auto max-w-sm rounded-lg text-right",  // bottom-right floating
+  "top-4 left-4 right-auto max-w-sm rounded-lg",     // top-left floating
+] as const;
+
+export function ImageCard({
+  src,
+  caption,
+  index,
+  total,
+  onClick,
+}: {
+  src: string;
+  caption: string;
+  index: number;
+  total: number;
+  onClick?: () => void;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLDivElement>(null);
   const [cardVisible, setCardVisible] = useState(false);
   const [captionVisible, setCaptionVisible] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
+
+  const position = captionPositions[index % captionPositions.length];
 
   // Fade in the card when it enters view
   useEffect(() => {
@@ -79,14 +100,18 @@ export function ImageCard({ src, caption, onClick }: { src: string; caption: str
         height={800}
         className="w-full object-cover"
       />
+      {/* Progress counter */}
+      <div className="absolute top-3 right-3 rounded-full bg-black/40 px-2.5 py-1 font-[family-name:var(--font-geist-mono)] text-xs text-white/50 backdrop-blur-sm">
+        {index + 1} / {total}
+      </div>
       <div
         ref={captionRef}
-        className="absolute bottom-0 left-0 right-0 bg-black/60 px-6 py-4 backdrop-blur-sm"
+        className={`absolute bg-black/60 px-6 py-4 backdrop-blur-sm ${position}`}
       >
-        <p className="font-mono text-sm text-white">
+        <p className="font-[family-name:var(--font-lora)] text-sm italic leading-relaxed text-white">
           {displayedText}
           {captionVisible && displayedText.length < caption.length && (
-            <span className="animate-pulse">|</span>
+            <span className="not-italic animate-pulse">|</span>
           )}
         </p>
       </div>

@@ -39,10 +39,10 @@ src/
 - [x] **Unique captions**: Replace lorem ipsum with real or realistic captions per image (each should feel like a sentence from an essay)
 - [x] **Closing card**: Final screen with a concluding thought or credit
 
-### Phase 2 — Typography & Polish
-- [ ] **Serif font for captions**: Swap monospace for a serif (e.g. Playfair Display or Lora) to feel more editorial
-- [ ] **Caption positioning variety**: Alternate caption placement (bottom-left, top-right, centered) to break visual monotony
-- [ ] **Image number / progress**: Subtle "3 / 12" counter so readers know where they are
+### Phase 2 — Typography & Polish ✓
+- [x] **Serif font for captions**: Swapped monospace for Lora (italic) in both cards and modal
+- [x] **Caption positioning variety**: Captions cycle through 4 positions (full bottom, bottom-left, bottom-right, top-left)
+- [x] **Image number / progress**: Subtle "3 / 12" counter in top-right corner of each card
 
 ### Phase 3 — Layout Variety
 - [ ] **Mixed layouts**: Not every card needs to be the same — some images could bleed full-width, some could be smaller with more text

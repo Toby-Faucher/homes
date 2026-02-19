@@ -143,7 +143,7 @@ export default function Home() {
             ref={(el) => { cardRefs.current[i + 1] = el; }}
             className="h-svh"
           >
-            <ImageCard src={img.src} caption={img.caption} onClick={() => setSelectedImage({ src: img.src, caption: img.caption })} />
+            <ImageCard src={img.src} caption={img.caption} index={i} total={images.length} onClick={() => setSelectedImage({ src: img.src, caption: img.caption })} />
           </div>
         ))}
 
