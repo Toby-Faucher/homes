@@ -4,18 +4,21 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 export function ImageCard({ src, caption }: { src: string; caption: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const captionRef = useRef<HTMLDivElement>(null);
+  const [cardVisible, setCardVisible] = useState(false);
+  const [captionVisible, setCaptionVisible] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
 
+  // Fade in the card when it enters view
   useEffect(() => {
-    const el = ref.current;
+    const el = cardRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
+          setCardVisible(true);
           observer.disconnect();
         }
       },
@@ -26,8 +29,27 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
     return () => observer.disconnect();
   }, []);
 
+  // Start typewriter when the caption overlay is visible
   useEffect(() => {
-    if (!visible) return;
+    const el = captionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCaptionVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!captionVisible) return;
 
     let i = 0;
     const interval = setInterval(() => {
@@ -37,13 +59,13 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [visible, caption]);
+  }, [captionVisible, caption]);
 
   return (
     <div
-      ref={ref}
+      ref={cardRef}
       className={`relative overflow-hidden rounded-lg transition-opacity duration-700 ease-out ${
-        visible ? "opacity-100" : "opacity-0"
+        cardVisible ? "opacity-100" : "opacity-0"
       }`}
     >
       <Image
@@ -53,10 +75,13 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
         height={800}
         className="w-full object-cover"
       />
-      <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-6 py-4 backdrop-blur-sm">
+      <div
+        ref={captionRef}
+        className="absolute bottom-0 left-0 right-0 bg-black/60 px-6 py-4 backdrop-blur-sm"
+      >
         <p className="font-mono text-sm text-white">
           {displayedText}
-          {visible && displayedText.length < caption.length && (
+          {captionVisible && displayedText.length < caption.length && (
             <span className="animate-pulse">|</span>
           )}
         </p>
