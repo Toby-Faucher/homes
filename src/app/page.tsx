@@ -9,8 +9,8 @@ const images = Array.from({ length: 12 }, (_, i) => ({
 
 export default function Home() {
   return (
-    <main className="mx-auto max-w-5xl px-4 py-12">
-      <div className="flex flex-col gap-8">
+    <main className="mx-auto max-w-5xl px-4">
+      <div className="flex flex-col">
         {images.map((img) => (
           <ImageCard
             key={img.id}

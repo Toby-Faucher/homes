@@ -64,10 +64,11 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
   return (
     <div
       ref={cardRef}
-      className={`relative overflow-hidden rounded-lg transition-opacity duration-700 ease-out ${
+      className={`flex h-svh items-center justify-center transition-opacity duration-700 ease-out ${
         cardVisible ? "opacity-100" : "opacity-0"
       }`}
     >
+      <div className="relative overflow-hidden rounded-lg">
       <Image
         src={src}
         alt=""
@@ -85,6 +86,7 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
             <span className="animate-pulse">|</span>
           )}
         </p>
+      </div>
       </div>
     </div>
   );
