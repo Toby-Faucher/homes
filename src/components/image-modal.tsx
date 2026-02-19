@@ -67,7 +67,9 @@ export function ImageModal({
         variant="outline"
         size="icon"
         onClick={handleClose}
-        className="fixed right-8 top-8 z-20 rounded-full border-white/20 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-300 hover:scale-125"
+        className={`fixed right-8 top-8 z-20 rounded-full border-white/20 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-300 hover:scale-125 ${
+          visible ? "opacity-100" : "opacity-0"
+        }`}
       >
         <X className="h-5 w-5" />
       </Button>
