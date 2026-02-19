@@ -68,7 +68,7 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
         cardVisible ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="relative overflow-hidden rounded-lg">
+      <div className="relative w-[90vw] max-w-6xl overflow-hidden rounded-lg border-2 border-black">
       <Image
         src={src}
         alt=""

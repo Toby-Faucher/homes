@@ -1,4 +1,8 @@
+"use client";
+
+import { useRef, useState, useEffect } from "react";
 import { ImageCard } from "@/components/image-card";
+import { ScrollButton } from "@/components/scroll-button";
 
 const images = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -8,17 +12,55 @@ const images = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export default function Home() {
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const index = cardRefs.current.indexOf(
+              entry.target as HTMLDivElement
+            );
+            if (index !== -1) {
+              setCurrentIndex(index);
+              setIsAtEnd(index === images.length - 1);
+            }
+          }
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    for (const ref of cardRefs.current) {
+      if (ref) observer.observe(ref);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToNext = () => {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < images.length) {
+      cardRefs.current[nextIndex]?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <main className="mx-auto max-w-5xl px-4">
+    <main className="px-4">
       <div className="flex flex-col">
-        {images.map((img) => (
-          <ImageCard
+        {images.map((img, i) => (
+          <div
             key={img.id}
-            src={img.src}
-            caption={img.caption}
-          />
+            ref={(el) => { cardRefs.current[i] = el; }}
+          >
+            <ImageCard src={img.src} caption={img.caption} />
+          </div>
         ))}
       </div>
+      {!isAtEnd && <ScrollButton onClick={scrollToNext} />}
     </main>
   );
 }
