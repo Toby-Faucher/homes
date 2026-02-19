@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { ImageCard } from "@/components/image-card";
-import { ScrollButton } from "@/components/scroll-button";
+import { ScrollDownButton, ScrollUpButton } from "@/components/scroll-button";
 
 const images = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -48,6 +48,13 @@ export default function Home() {
     }
   };
 
+  const scrollToPrev = () => {
+    const prevIndex = currentIndex - 1;
+    if (prevIndex >= 0) {
+      cardRefs.current[prevIndex]?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <main className="px-4">
       <div className="flex flex-col">
@@ -60,7 +67,8 @@ export default function Home() {
           </div>
         ))}
       </div>
-      {!isAtEnd && <ScrollButton onClick={scrollToNext} />}
+      {currentIndex > 0 && <ScrollUpButton onClick={scrollToPrev} />}
+      {!isAtEnd && <ScrollDownButton onClick={scrollToNext} />}
     </main>
   );
 }
