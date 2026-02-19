@@ -32,12 +32,14 @@ const PARALLAX_MAX_PX = 40;
 export function ImageCard({
   src,
   caption,
+  note,
   index,
   total,
   onClick,
 }: {
   src: string;
   caption: string;
+  note?: string;
   index: number;
   total: number;
   onClick?: () => void;
@@ -48,6 +50,7 @@ export function ImageCard({
   const [cardVisible, setCardVisible] = useState(false);
   const [captionVisible, setCaptionVisible] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
+  const [noteVisible, setNoteVisible] = useState(false);
 
   const position = captionPositions[index % captionPositions.length];
   const layout = layoutVariants[index % layoutVariants.length];
@@ -99,11 +102,15 @@ export function ImageCard({
 
   useEffect(() => {
     if (!captionVisible) return;
+    setNoteVisible(false);
     let i = 0;
     const interval = setInterval(() => {
       i++;
       setDisplayedText(caption.slice(0, i));
-      if (i >= caption.length) clearInterval(interval);
+      if (i >= caption.length) {
+        clearInterval(interval);
+        setNoteVisible(true);
+      }
     }, 30);
     return () => clearInterval(interval);
   }, [captionVisible, caption]);
@@ -148,12 +155,17 @@ export function ImageCard({
           ref={captionRef}
           className={`absolute z-10 bg-black/60 px-6 py-4 backdrop-blur-sm ${position}`}
         >
-          <p className="font-[family-name:var(--font-lora)] text-sm italic leading-relaxed text-white">
+          <p className="font-[family-name:var(--font-lora)] text-sm md:text-base italic leading-relaxed text-white">
             {displayedText}
             {captionVisible && displayedText.length < caption.length && (
               <span className="not-italic animate-pulse">|</span>
             )}
           </p>
+          {note && (
+            <p className={`mt-3 border-t border-white/20 pt-3 font-[family-name:var(--font-geist-sans)] text-xs font-light text-white/50 transition-opacity duration-700 ${noteVisible ? "opacity-100" : "opacity-0"}`}>
+              {note}
+            </p>
+          )}
         </div>
       </div>
     </div>

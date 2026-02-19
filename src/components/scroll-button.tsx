@@ -23,7 +23,7 @@ export function ScrollDownButton({
       size={isWide ? "default" : "icon"}
       onClick={onClick}
       className={`fixed bottom-8 left-1/2 z-10 -translate-x-1/2 transition-all duration-300 hover:scale-105 ${glassClass} ${
-        isWide ? "gap-2 rounded-full px-6" : "rounded-full hover:scale-125"
+        isWide ? "gap-2 rounded-full px-6" : "min-h-[44px] min-w-[44px] rounded-full hover:scale-125"
       } ${
         visible
           ? "translate-y-0 opacity-100"
@@ -61,7 +61,7 @@ export function ScrollUpButton({
       variant="outline"
       size="icon"
       onClick={onClick}
-      className={`fixed left-1/2 top-8 z-10 -translate-x-1/2 rounded-full transition-all duration-300 hover:scale-125 ${glassClass} ${
+      className={`fixed left-1/2 top-8 z-10 -translate-x-1/2 min-h-[44px] min-w-[44px] rounded-full transition-all duration-300 hover:scale-125 ${glassClass} ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none -translate-y-4 opacity-0"

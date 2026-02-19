@@ -8,14 +8,17 @@ import { Button } from "@/components/ui/button";
 export function ImageModal({
   src,
   caption,
+  note,
   onClose,
 }: {
   src: string;
   caption: string;
+  note?: string;
   onClose: () => void;
 }) {
   const [visible, setVisible] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
+  const [noteVisible, setNoteVisible] = useState(false);
 
   // Animate in on mount
   useEffect(() => {
@@ -28,12 +31,16 @@ export function ImageModal({
 
   // Typewriter starts after open animation
   useEffect(() => {
+    setNoteVisible(false);
     const delay = setTimeout(() => {
       let i = 0;
       const interval = setInterval(() => {
         i++;
         setDisplayedText(caption.slice(0, i));
-        if (i >= caption.length) clearInterval(interval);
+        if (i >= caption.length) {
+          clearInterval(interval);
+          setNoteVisible(true);
+        }
       }, 30);
       return () => clearInterval(interval);
     }, 300);
@@ -94,6 +101,11 @@ export function ImageModal({
                 <span className="animate-pulse">|</span>
               )}
             </p>
+            {note && (
+              <p className={`mt-3 border-t border-white/20 pt-3 font-[family-name:var(--font-geist-sans)] text-xs font-light text-white/50 transition-opacity duration-700 ${noteVisible ? "opacity-100" : "opacity-0"}`}>
+                {note}
+              </p>
+            )}
           </div>
         </div>
       </div>
