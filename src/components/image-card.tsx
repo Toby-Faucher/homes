@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-export function ImageCard({ src, caption }: { src: string; caption: string }) {
+export function ImageCard({ src, caption, onClick }: { src: string; caption: string; onClick?: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLDivElement>(null);
   const [cardVisible, setCardVisible] = useState(false);
@@ -68,7 +68,10 @@ export function ImageCard({ src, caption }: { src: string; caption: string }) {
         cardVisible ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="relative w-[90vw] max-w-6xl overflow-hidden rounded-lg border-2 border-black">
+      <div
+        className="relative w-[90vw] max-w-6xl cursor-pointer overflow-hidden rounded-lg border-2 border-black"
+        onClick={onClick}
+      >
       <Image
         src={src}
         alt=""

@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { ImageCard } from "@/components/image-card";
+import { ImageModal } from "@/components/image-modal";
 import { ScrollDownButton, ScrollUpButton } from "@/components/scroll-button";
 
 const images = Array.from({ length: 12 }, (_, i) => ({
@@ -15,6 +16,7 @@ export default function Home() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAtEnd, setIsAtEnd] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{ src: string; caption: string } | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -63,12 +65,23 @@ export default function Home() {
             key={img.id}
             ref={(el) => { cardRefs.current[i] = el; }}
           >
-            <ImageCard src={img.src} caption={img.caption} />
+            <ImageCard src={img.src} caption={img.caption} onClick={() => setSelectedImage({ src: img.src, caption: img.caption })} />
           </div>
         ))}
       </div>
-      <ScrollUpButton onClick={scrollToPrev} visible={currentIndex > 0} />
-      <ScrollDownButton onClick={scrollToNext} visible={!isAtEnd} />
+      {!selectedImage && (
+        <>
+          <ScrollUpButton onClick={scrollToPrev} visible={currentIndex > 0} />
+          <ScrollDownButton onClick={scrollToNext} visible={!isAtEnd} />
+        </>
+      )}
+      {selectedImage && (
+        <ImageModal
+          src={selectedImage.src}
+          caption={selectedImage.caption}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </main>
   );
 }
