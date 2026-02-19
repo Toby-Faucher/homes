@@ -8,63 +8,53 @@ import { ScrollDownButton, ScrollUpButton } from "@/components/scroll-button";
 const images = [
   {
     id: 0,
-    src: "https://picsum.photos/seed/1/1200/800",
-    caption: "A fishing village in northern Portugal. The houses lean into each other like old friends sharing a secret.",
+    src: "/images/coffin.png",
+    caption: "Hong Kong. A family of three in under fifteen square metres. The fan runs all night. No one complains about the noise.",
   },
   {
     id: 1,
-    src: "https://picsum.photos/seed/2/1200/800",
-    caption: "She said the rent was nothing — just promise to keep the garden alive.",
+    src: "/images/colorful.png",
+    caption: "Nyhavn, Copenhagen. Each facade a different colour, as if the city couldn't agree on who lived here — and decided everyone did.",
   },
   {
     id: 2,
-    src: "https://picsum.photos/seed/3/1200/800",
-    caption: "Three generations under one roof. The walls remember more arguments than anyone will admit.",
+    src: "/images/water-village.png",
+    caption: "Ha Long Bay, Vietnam. Hundreds of families live on the water, raising fish beneath their floors, reading tides the way others read clocks.",
   },
   {
     id: 3,
-    src: "https://picsum.photos/seed/4/1200/800",
-    caption: "In Osaka, a four-square-meter apartment. He called it enough. He meant it.",
+    src: "/images/huts.png",
+    caption: "Beehive houses, Syria. Domes of mud and straw that breathe — keeping the inside cool without a single kilowatt of power.",
   },
   {
     id: 4,
-    src: "https://picsum.photos/seed/5/1200/800",
-    caption: "The door was painted blue to ward off evil spirits. Nobody believes that anymore, but nobody repaints it either.",
+    src: "/images/stilts.png",
+    caption: "Bangladesh. Built on stilts because the river comes every year without fail. Home here means knowing when to be higher than the water.",
   },
   {
     id: 5,
-    src: "https://picsum.photos/seed/6/1200/800",
-    caption: "They built this place with their own hands the summer before the twins were born. The porch still slopes left.",
+    src: "/images/tiny-home.png",
+    caption: "A tiny home, somewhere in the woods. Everything has its place. There is no room for anything that doesn't belong.",
   },
   {
     id: 6,
-    src: "https://picsum.photos/seed/7/1200/800",
-    caption: "A houseboat on the Mekong. Home is wherever the current takes you, she said, and then she dropped anchor.",
+    src: "/images/van.png",
+    caption: "An Alpine meadow, Tuesday morning. He said he gave up the lease two years ago and hasn't missed a single thing inside it.",
   },
   {
     id: 7,
-    src: "https://picsum.photos/seed/8/1200/800",
-    caption: "The landlord hasn't visited in eleven years. The tenants have replaced every fixture, every pipe, every lock.",
+    src: "/images/nature.png",
+    caption: "Shengshan Island, China. The village was abandoned in the 1990s. The vines moved in quietly, as tenants sometimes do.",
   },
   {
     id: 8,
-    src: "https://picsum.photos/seed/9/1200/800",
-    caption: "Mud walls two feet thick keep the Saharan heat at bay. At night, the stars feel close enough to touch.",
+    src: "/images/destroyed.png",
+    caption: "After the earthquake, they searched for three days. The building had stood for sixty years. It came down in eleven seconds.",
   },
   {
     id: 9,
-    src: "https://picsum.photos/seed/10/1200/800",
-    caption: "After the fire, they rebuilt in the exact same spot. Some places hold you even when they're gone.",
-  },
-  {
-    id: 10,
-    src: "https://picsum.photos/seed/11/1200/800",
-    caption: "A shipping container in Auckland, converted over six weekends. The neighbors stopped laughing by the third.",
-  },
-  {
-    id: 11,
-    src: "https://picsum.photos/seed/12/1200/800",
-    caption: "The last house on the road before the mountain pass. In winter, the nearest neighbor is forty minutes away.",
+    src: "/images/log.png",
+    caption: "Home is wherever you fit. Wherever you feel the walls around you and decide, for now, this is enough.",
   },
 ];
 

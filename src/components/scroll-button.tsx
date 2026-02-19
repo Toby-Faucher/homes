@@ -42,7 +42,7 @@ export function ScrollDownButton({
       {mode === "closing" && (
         <>
           <ArrowUp className="h-4 w-4" />
-          <span className="text-sm font-light">Back to top</span>
+          <span className="text-sm font-light">Go back up</span>
         </>
       )}
     </Button>
