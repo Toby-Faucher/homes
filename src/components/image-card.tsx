@@ -3,28 +3,13 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-const captionPositions = [
-  "bottom-0 left-0 right-0",
-  "bottom-4 left-4 right-auto max-w-sm rounded-lg",
-  "bottom-4 right-4 left-auto max-w-sm rounded-lg text-right",
-  "top-4 left-4 right-auto max-w-sm rounded-lg",
-] as const;
-
-const layoutVariants = [
-  "w-[90vw] max-w-6xl",
-  "w-[70vw] max-w-4xl",
-  "w-[95vw] max-w-7xl",
-] as const;
-
 const entranceVariants = [
   { hidden: "opacity-0 translate-y-8",   visible: "opacity-100 translate-y-0" },
   { hidden: "opacity-0 -translate-x-12", visible: "opacity-100 translate-x-0" },
   { hidden: "opacity-0 translate-x-12",  visible: "opacity-100 translate-x-0" },
-  { hidden: "opacity-0 scale-95",        visible: "opacity-100 scale-100" },
 ] as const;
 
 // How far (in %) the parallax wrapper extends beyond the card on each side.
-// The parallax translateY must stay within this budget.
 const PARALLAX_INSET = 10;
 const PARALLAX_FACTOR = 0.06;
 const PARALLAX_MAX_PX = 40;
@@ -46,14 +31,12 @@ export function ImageCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const captionRef = useRef<HTMLDivElement>(null);
   const [cardVisible, setCardVisible] = useState(false);
-  const [captionVisible, setCaptionVisible] = useState(false);
+  const [typewriterReady, setTypewriterReady] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const [noteVisible, setNoteVisible] = useState(false);
 
-  const position = captionPositions[index % captionPositions.length];
-  const layout = layoutVariants[index % layoutVariants.length];
+  const imageOnLeft = index % 2 === 0;
   const entrance = entranceVariants[index % entranceVariants.length];
 
   // Fade in the card when it enters view
@@ -67,6 +50,13 @@ export function ImageCard({
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  // After card visible: wait then start typewriter
+  useEffect(() => {
+    if (!cardVisible) return;
+    const t = setTimeout(() => setTypewriterReady(true), 800);
+    return () => clearTimeout(t);
+  }, [cardVisible]);
 
   // Parallax: shift the oversized image wrapper vertically within its clipping parent
   useEffect(() => {
@@ -88,20 +78,9 @@ export function ImageCard({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Start typewriter when the caption overlay is visible
+  // Typewriter: runs once typewriterReady flips true
   useEffect(() => {
-    const el = captionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setCaptionVisible(true); observer.disconnect(); } },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!captionVisible) return;
+    if (!typewriterReady) return;
     setNoteVisible(false);
     let i = 0;
     const interval = setInterval(() => {
@@ -113,24 +92,21 @@ export function ImageCard({
       }
     }, 30);
     return () => clearInterval(interval);
-  }, [captionVisible, caption]);
+  }, [typewriterReady, caption]);
 
   return (
     <div
       ref={cardRef}
-      className={`flex h-svh items-center justify-center transition-all duration-700 ease-out ${
-        cardVisible ? entrance.visible : entrance.hidden
-      }`}
+      className={`flex items-center gap-10 py-20 px-8 transition-all duration-700 ease-out ${
+        imageOnLeft ? "flex-row" : "flex-row-reverse"
+      } ${cardVisible ? entrance.visible : entrance.hidden}`}
     >
+      {/* Image */}
       <div
-        className={`relative cursor-pointer overflow-hidden rounded-lg border-2 border-black ${layout}`}
+        className="relative shrink-0 cursor-pointer overflow-hidden rounded-2xl"
+        style={{ width: "55vw", height: "62vh" }}
         onClick={onClick}
       >
-        {/* Fixed 3:2 aspect ratio so all images are consistently proportioned */}
-        <div className="aspect-[3/2]" />
-
-        {/* Parallax wrapper extends beyond the card by PARALLAX_INSET % on all sides,
-            giving the translateY room to move without ever revealing a gap */}
         <div
           ref={imageRef}
           className="absolute"
@@ -141,7 +117,7 @@ export function ImageCard({
             alt=""
             fill
             className="object-cover object-center"
-            sizes="95vw"
+            sizes="55vw"
           />
         </div>
 
@@ -149,24 +125,21 @@ export function ImageCard({
         <div className="absolute right-3 top-3 z-10 rounded-full bg-black/40 px-2.5 py-1 font-[family-name:var(--font-geist-mono)] text-xs text-white/50 backdrop-blur-sm">
           {index + 1} / {total}
         </div>
+      </div>
 
-        {/* Caption */}
-        <div
-          ref={captionRef}
-          className={`absolute z-10 bg-black/60 px-6 py-4 backdrop-blur-sm ${position}`}
-        >
-          <p className="font-[family-name:var(--font-lora)] text-sm md:text-base italic leading-relaxed text-white">
-            {displayedText}
-            {captionVisible && displayedText.length < caption.length && (
-              <span className="not-italic animate-pulse">|</span>
-            )}
-          </p>
-          {note && (
-            <p className={`mt-3 border-t border-white/20 pt-3 font-[family-name:var(--font-geist-sans)] text-xs font-light text-white/50 transition-opacity duration-700 ${noteVisible ? "opacity-100" : "opacity-0"}`}>
-              {note}
-            </p>
+      {/* Caption */}
+      <div className={`min-w-0 flex-1 ${imageOnLeft ? "pr-4 text-left" : "pl-4 text-right"}`}>
+        <p className="font-[family-name:var(--font-lora)] text-sm md:text-base italic leading-relaxed text-white/90">
+          {displayedText}
+          {typewriterReady && displayedText.length < caption.length && (
+            <span className="not-italic animate-pulse">|</span>
           )}
-        </div>
+        </p>
+        {note && (
+          <p className={`mt-3 border-t border-white/20 pt-3 font-[family-name:var(--font-geist-sans)] text-xs font-light text-white/50 transition-opacity duration-700 ${noteVisible ? "opacity-100" : "opacity-0"}`}>
+            {note}
+          </p>
+        )}
       </div>
     </div>
   );

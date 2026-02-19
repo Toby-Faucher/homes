@@ -76,6 +76,63 @@ const images: ImageEntry[] = [
   },
 ];
 
+// Snake connector between image cards.
+// Draws itself as the user scrolls — 0% when it enters the viewport, 100% when its top reaches the viewport top.
+function SnakeConnector({ fromLeft }: { fromLeft: boolean }) {
+  const pathRef = useRef<SVGPathElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const startX = fromLeft ? 28 : 72;
+  const endX = fromLeft ? 72 : 28;
+  const d = `M ${startX} 0 C ${startX} 50, ${endX} 50, ${endX} 100`;
+
+  useEffect(() => {
+    const path = pathRef.current;
+    const container = containerRef.current;
+    if (!path || !container) return;
+
+    const totalLength = path.getTotalLength();
+    if (totalLength === 0) return;
+
+    path.style.strokeDasharray = `${totalLength}`;
+    path.style.strokeDashoffset = `${totalLength}`;
+
+    const onScroll = () => {
+      const rect = container.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 when the connector enters from the bottom, 1 when its top hits the viewport top
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / vh));
+      path.style.strokeDashoffset = `${totalLength * (1 - progress)}`;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div ref={containerRef} className="pointer-events-none hidden md:block">
+      <svg
+        width="100%"
+        height="200"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <path
+          ref={pathRef}
+          d={d}
+          stroke="rgba(255,255,255,0.45)"
+          strokeWidth="5"
+          fill="none"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default function Home() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const touchStartY = useRef<number>(0);
@@ -100,7 +157,7 @@ export default function Home() {
           }
         }
       },
-      { threshold: 0.5 },
+      { threshold: 0.4 },
     );
 
     for (const ref of cardRefs.current) {
@@ -165,11 +222,13 @@ export default function Home() {
     <>
       <div className="fixed inset-x-0 top-0 z-50 h-0.5">
         <div
-          className={`h-full bg-white/30 transition-all duration-500 ease-out ${currentIndex === 0 ? "opacity-0" : "opacity-100"
-            }`}
+          className={`h-full bg-white/30 transition-all duration-500 ease-out ${
+            currentIndex === 0 ? "opacity-0" : "opacity-100"
+          }`}
           style={{ width: `${progressPct}%` }}
         />
       </div>
+
       <main className="px-4">
         <div className="flex flex-col">
           {/* Title card */}
@@ -188,29 +247,33 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Image cards */}
+          {/* Image cards with snake connectors */}
           {images.map((img, i) => (
-            <div
-              key={img.id}
-              data-index={i + 1}
-              ref={(el) => {
-                cardRefs.current[i + 1] = el;
-              }}
-              className="h-svh"
-            >
-              <ImageCard
-                src={img.src}
-                caption={img.caption}
-                note={img.note}
-                index={i}
-                total={images.length}
-                onClick={() =>
-                  setSelectedImage({
-                    src: img.src,
-                    caption: img.caption,
-                    note: img.note,
-                  })}
-              />
+            <div key={img.id}>
+              <div
+                data-index={i + 1}
+                ref={(el) => {
+                  cardRefs.current[i + 1] = el;
+                }}
+              >
+                <ImageCard
+                  src={img.src}
+                  caption={img.caption}
+                  note={img.note}
+                  index={i}
+                  total={images.length}
+                  onClick={() =>
+                    setSelectedImage({
+                      src: img.src,
+                      caption: img.caption,
+                      note: img.note,
+                    })
+                  }
+                />
+              </div>
+              {i < images.length - 1 && (
+                <SnakeConnector fromLeft={i % 2 === 0} />
+              )}
             </div>
           ))}
 
@@ -226,6 +289,7 @@ export default function Home() {
               Home is not always a place. Sometimes it is a person, a memory, or
               a door you never locked.
             </p>
+            <p className="mt-8 text-sm text-white/30">made by toby</p>
           </div>
         </div>
         {!selectedImage && (
@@ -237,11 +301,13 @@ export default function Home() {
             <ScrollDownButton
               onClick={isAtEnd ? scrollToTop : scrollToNext}
               visible
-              mode={currentIndex === 0
-                ? "title"
-                : isAtEnd
-                  ? "closing"
-                  : "normal"}
+              mode={
+                currentIndex === 0
+                  ? "title"
+                  : isAtEnd
+                    ? "closing"
+                    : "normal"
+              }
             />
           </>
         )}
