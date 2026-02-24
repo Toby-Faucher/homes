@@ -23,7 +23,7 @@ const images: ImageEntry[] = [
     id: 1,
     src: "/images/colorful.png",
     caption:
-      "Nyhavn, Copenhagen. Each facade a different colour, as if the city couldn't agree on who lived here — and decided everyone did.",
+      "Nyhavn, Copenhagen. Each facade a different color, as if the city couldn't agree on who lived here.",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const images: ImageEntry[] = [
     id: 3,
     src: "/images/huts.png",
     caption:
-      "Beehive houses, Syria. Domes of mud and straw that breathe — keeping the inside cool without a single kilowatt of power.",
+      "Beehive houses, Syria. Domes of mud and straw that breathe. They keep the inside cool without a single kilowatt of power.",
   },
   {
     id: 4,
@@ -101,7 +101,10 @@ function SnakeConnector({ fromLeft }: { fromLeft: boolean }) {
       svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
       const sx = (fromLeft ? 0.28 : 0.72) * W;
       const ex = (fromLeft ? 0.72 : 0.28) * W;
-      path.setAttribute("d", `M ${sx} 0 C ${sx} ${H / 2}, ${ex} ${H / 2}, ${ex} ${H}`);
+      path.setAttribute(
+        "d",
+        `M ${sx} 0 C ${sx} ${H / 2}, ${ex} ${H / 2}, ${ex} ${H}`,
+      );
       // Midpoint of this bezier always lands at the SVG centre
       dot.setAttribute("cx", `${W / 2}`);
       dot.setAttribute("cy", `${H / 2}`);
@@ -129,7 +132,6 @@ function SnakeConnector({ fromLeft }: { fromLeft: boolean }) {
       window.removeEventListener("scroll", updateOffset);
       ro.disconnect();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromLeft]);
 
   return (
@@ -242,9 +244,8 @@ export default function Home() {
     <>
       <div className="fixed inset-x-0 top-0 z-50 h-0.5">
         <div
-          className={`h-full bg-white/30 transition-all duration-500 ease-out ${
-            currentIndex === 0 ? "opacity-0" : "opacity-100"
-          }`}
+          className={`h-full bg-white/30 transition-all duration-500 ease-out ${currentIndex === 0 ? "opacity-0" : "opacity-100"
+            }`}
           style={{ width: `${progressPct}%` }}
         />
       </div>
@@ -287,8 +288,7 @@ export default function Home() {
                       src: img.src,
                       caption: img.caption,
                       note: img.note,
-                    })
-                  }
+                    })}
                 />
               </div>
               {i < images.length - 1 && (
@@ -321,13 +321,11 @@ export default function Home() {
             <ScrollDownButton
               onClick={isAtEnd ? scrollToTop : scrollToNext}
               visible
-              mode={
-                currentIndex === 0
-                  ? "title"
-                  : isAtEnd
-                    ? "closing"
-                    : "normal"
-              }
+              mode={currentIndex === 0
+                ? "title"
+                : isAtEnd
+                  ? "closing"
+                  : "normal"}
             />
           </>
         )}
