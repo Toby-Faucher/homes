@@ -17,13 +17,13 @@ const images: ImageEntry[] = [
     id: 0,
     src: "/images/coffin.png",
     caption:
-      "Hong Kong. A family of three in under fifteen square metres. The fan runs all night. No one complains about the noise.",
+      "Hong Kong. A family of three in under fifteen square metres. The fan runs all night. No one complains about the noise. They just hope the children sleep.",
   },
   {
     id: 1,
     src: "/images/colorful.png",
     caption:
-      "Nyhavn, Copenhagen. Each facade a different color, as if the city couldn't agree on who lived here.",
+      "Nyhavn, Copenhagen. Each facade a different color, as if the city couldn't agree on who lived here. Some live in boats, some live in homes.",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const images: ImageEntry[] = [
     id: 3,
     src: "/images/huts.png",
     caption:
-      "Beehive houses, Syria. Domes of mud and straw that breathe. They keep the inside cool without a single kilowatt of power.",
+      "Beehive houses, Syria. Domes of mud and straw that breathe. They keep the inside cool without a single kilowatt of power. Their ancestors built them the same way.",
   },
   {
     id: 4,
@@ -147,7 +147,7 @@ function SnakeConnector({ fromLeft }: { fromLeft: boolean }) {
         <circle
           ref={dotRef}
           r="3"
-          fill="rgba(255,255,255,0.6)"
+          fill="oklch(0.75 0.12 75 / 0.6)"
           style={{ opacity: 0 }}
         />
       </svg>
@@ -244,7 +244,7 @@ export default function Home() {
     <>
       <div className="fixed inset-x-0 top-0 z-50 h-0.5">
         <div
-          className={`h-full bg-white/30 transition-all duration-500 ease-out ${currentIndex === 0 ? "opacity-0" : "opacity-100"
+          className={`h-full bg-[var(--accent-warm)]/40 transition-all duration-500 ease-out ${currentIndex === 0 ? "opacity-0" : "opacity-100"
             }`}
           style={{ width: `${progressPct}%` }}
         />

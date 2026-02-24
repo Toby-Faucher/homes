@@ -86,7 +86,7 @@ export function ImageModal({
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden rounded-lg border-2 border-black">
+        <div className="overflow-hidden rounded-lg">
           <Image
             src={src}
             alt=""

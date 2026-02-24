@@ -49,6 +49,8 @@
 
 :root {
   --radius: 0.625rem;
+  --accent-warm: oklch(0.75 0.12 75);
+  --accent-warm-dim: oklch(0.55 0.08 75);
   --background: oklch(0.234 0.006 264.531);
   --foreground: oklch(0.985 0 0);
   --card: oklch(1 0 0);

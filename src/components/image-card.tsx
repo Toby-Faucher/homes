@@ -103,7 +103,7 @@ export function ImageCard({
     >
       {/* Image */}
       <div
-        className="relative shrink-0 cursor-pointer overflow-hidden rounded-2xl"
+        className="relative shrink-0 cursor-pointer overflow-hidden rounded-2xl transition-shadow duration-300 hover:ring-2 hover:ring-[var(--accent-warm)]/40"
         style={{ width: "55vw", height: "72vh" }}
         onClick={onClick}
       >
@@ -122,7 +122,7 @@ export function ImageCard({
         </div>
 
         {/* Progress counter */}
-        <div className="absolute right-3 top-3 z-10 rounded-full bg-black/40 px-2.5 py-1 font-[family-name:var(--font-geist-mono)] text-xs text-white/50 backdrop-blur-sm">
+        <div className="absolute right-3 top-3 z-10 rounded-full bg-black/40 px-2.5 py-1 font-[family-name:var(--font-geist-mono)] text-xs text-[var(--accent-warm-dim)] backdrop-blur-sm">
           {index + 1} / {total}
         </div>
       </div>
